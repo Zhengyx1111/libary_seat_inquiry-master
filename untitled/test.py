@@ -4,12 +4,14 @@
 import os, sys
 import datetime
 import search as sea
+import tkinter.messagebox
+
 
 from tkinter import *
-
+#import tkinter.messagebox
 from tkinter.font import Font
 from tkinter.ttk import *
-from tkinter.messagebox import *
+#from tkinter.messagebox import *
 
 
 class Application_ui(Frame):
@@ -26,17 +28,17 @@ class Application_ui(Frame):
 
         self.style = Style()
 
-        self.Text2Var = StringVar(value='月')
+        self.Text2Var = StringVar(value='月（1-12）')
         self.Text2 = Entry(self.top, text='月',textvariable=self.Text2Var, font=('宋体',9))
-        self.Text2.place(relx=0.111, rely=0.046, relwidth=0.04, relheight=0.036)
+        self.Text2.place(relx=0.111, rely=0.046, relwidth=0.05, relheight=0.036)
 
         self.style.configure('Command1.TButton',font=('宋体',9))
         self.Command1 = Button(self.top, command=self.Command1_Cmd, text='确定', style='Command1.TButton')
         self.Command1.place(relx=0.366, rely=0.046, relwidth=0.047, relheight=0.047)
 
-        self.Text1Var = StringVar(value='年')
+        self.Text1Var = StringVar(value='年（2019）')
         self.Text1 = Entry(self.top, text='年', textvariable=self.Text1Var, font=('宋体',9))
-        self.Text1.place(relx=0.058, rely=0.046, relwidth=0.047, relheight=0.036)
+        self.Text1.place(relx=0.058, rely=0.046, relwidth=0.049, relheight=0.036)
 
         self.style.configure('Label7.TLabel',anchor='center', font=('宋体',9))
         self.varlabel7 = StringVar(value='')
@@ -71,17 +73,17 @@ class Application_ui(Frame):
         self.Label1 = Label(self.top, text='图书馆学生座位实时统计', style='Label1.TLabel')
         self.Label1.place(relx=0., rely=0.011, relwidth=0.118, relheight=0.024)
 
-        self.Text3Var = StringVar(value='日')
+        self.Text3Var = StringVar(value='日（1-31）')
         self.Text3 = Entry(self.top, text='日', textvariable=self.Text3Var, font=('宋体',9))
-        self.Text3.place(relx=0.176, rely=0.046, relwidth=0.047, relheight=0.037)
+        self.Text3.place(relx=0.176, rely=0.046, relwidth=0.057, relheight=0.037)
 
-        self.Text4Var = StringVar(value='时')
+        self.Text4Var = StringVar(value='时（0-24）')
         self.Text4 = Entry(self.top, text='时', textvariable=self.Text4Var, font=('宋体',9))
-        self.Text4.place(relx=0.235, rely=0.046, relwidth=0.047, relheight=0.036)
+        self.Text4.place(relx=0.235, rely=0.046, relwidth=0.05, relheight=0.036)
 
-        self.Text5Var = StringVar(value='分')
+        self.Text5Var = StringVar(value='分(0-60)')
         self.Text5 = Entry(self.top, text='分', textvariable=self.Text5Var, font=('宋体',9))
-        self.Text5.place(relx=0.307, rely=0.046, relwidth=0.033, relheight=0.036)
+        self.Text5.place(relx=0.307, rely=0.046, relwidth=0.053, relheight=0.036)
 
         self.Text6Var = StringVar(value='roomid(1-12)')
         self.Text6 = Entry(self.top, text='roomid', textvariable=self.Text6Var, font=('宋体',9))
@@ -108,6 +110,7 @@ class Application_ui(Frame):
         self.Label11.place(relx=0.592, rely=0.825, relwidth=0.171, relheight=0.047)
 
 
+
 class Application(Application_ui):
     #这个类实现具体的事件处理回调函数。界面生成代码在Application_ui中。
     def __init__(self, master=None):
@@ -124,6 +127,7 @@ class Application(Application_ui):
         # self.var10 = StringVar()
         # self.var11 = StringVar()
         self.studentID = 0
+
 
     def Student_state(self,arr):
         if(arr == 0):
@@ -146,12 +150,27 @@ class Application(Application_ui):
         self.Label5["background"] = "white"
         self.Label6["background"] = "white"
 
-        self.var1 =  self.Text1.get()
-        self.var2 =  self.Text2.get()
-        self.var3 =  self.Text3.get()
-        self.var4 =  self.Text4.get()
-        self.var5 =  self.Text5.get()
-        self.var6 =  self.Text6.get()
+        self.var1 =  self.Text1.get()#年
+        self.var2 =  self.Text2.get()#月
+        self.var3 =  self.Text3.get()#日
+        self.var4 =  self.Text4.get()#时
+        self.var5 =  self.Text5.get()#分
+        self.var6 =  self.Text6.get()#房间
+
+        if (int(self.var1)!=2019):
+            tkinter.messagebox.showerror('错误', '时间是2019年')
+        if (int(self.var2)<=0 & int(self.var2)>12):
+            tkinter.messagebox.showerror('错误', '月份出错')
+        if (int(self.var3)<=0 & int(self.var3)>31):
+            tkinter.messagebox.showerror('错误', '日期出错')
+        if (int(self.var4)<0 & int(self.var4)>=12):
+            tkinter.messagebox.showerror('错误', '小时出错')
+        if (int(self.var5)<=0 & int(self.var5)>60):
+            tkinter.messagebox.showerror('错误', '分钟出错')
+        if (int(self.var6)<=0 ):
+            tkinter.messagebox.showerror('错误', '房间号是正整数')
+
+
         self.roomID=int(self.var6)
         self.varlabel7.set(self.roomID)
         #print(self.roomID)
@@ -196,10 +215,6 @@ class Application(Application_ui):
         if (self.Student_state(self.seats[3])[1] == 3):
             self.Label6["background"]="#ffffe0"
 
-
-
-
-
     pass
 
 
@@ -209,6 +224,8 @@ class Application(Application_ui):
 
 if __name__ == "__main__":
     top = Tk()
+    # tkinter.messagebox.showinfo('提示', '人生苦短')
+    # tkinter.messagebox.showerror('错误', '出错了')
     Application(top).mainloop()
     try: top.destroy()
     except: pass
